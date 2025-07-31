@@ -29,11 +29,11 @@ There are various open-source models available for speech recognition. However, 
 
 In addition, we can apply various optimization techniques to further improve the model's efficiency, such as LoRA (Low-Rank Adaptation), quantization, or inference optimization with ONNX Runtime. For this use case, I chose to apply quantization to the model, as it reduces the model size and memory usage while maintaining a good level of performance. On the other hand, LoRA is more suitable for fine-tuning tasks where we want to adapt the model to a specific domain, such as handling indonesian or local languages. Furthermore, regarding ONNX, it requires converting the model to ONNX format and additional steps to optimize it for inference, which add complexity to the process. Thus, I chose to apply quantization to the model to support real-time transcription.
 
-1. Explain the core concept behind the technique you chose. How does it reduce the computational or memory footprint of a large model?
+2. Explain the core concept behind the technique you chose. How does it reduce the computational or memory footprint of a large model?
 
 = Quantization is a technique that reduces the precision of the model's weights and activations, which in turn reduces the model size and memory usage. This is achieved by converting the model's weights from high-precision floating-point numbers (e.g., 32-bit) to lower-precision formats (e.g., 8-bit integers). This reduces the amount of memory required to store the model and speeds up inference by computing with lower-precision data types, which are generally faster to process on modern hardware.
 
-1. What are the potential trade-offs of using this technique (e.g., performance drop, accuracy changes)?
+3. What are the potential trade-offs of using this technique (e.g., performance drop, accuracy changes)?
 
 = The main trade-off of using quantization is the potential drop in model accuracy. Reducing the precision of the weights and activations can lead to a loss of information, which may negatively impact the model's performance on certain tasks. However, with careful quantization and calibration, such as using GPTQ, it is possible to minimize the impact on accuracy while still achieving significant reductions in model size and memory usage. In practice, the trade-off between model size and accuracy should be carefully evaluated. Therefore, I provide a similar benchmarking table for the quantized model to compare its performance with the original model as follows:
 
@@ -80,12 +80,15 @@ This program uses several Python libraries to handle real-time audio transcripti
 ### Documentation
 
 1. What are the main challenges in building a low-latency streaming transcription system?
+
 = The main challenges lie in ensuring low latency and high throughput, while maintaining accuracy. This involves efficiently capturing audio data, processing it in real-time, and minimizing the time taken for transcription. To overcome these challenges, we need to choose an efficient model that can handle real-time transcription, such as the quantized Whisper model, and implement a robust and efficient audio processing pipeline.
 
 2. How did you handle the continuous flow of audio data? Explain your strategy for segmenting or buffering the audio.
+
 = The continuous flow of audio data is handled using a thread-safe queue to collect audio chunks. The audio is captured in small blocks by the main thread and added to the queue. A separate thread then collects these audio chunks from the queue to a buffer, which is then processed in chunks of a fixed duration (e.g., 4 seconds). This allows for real-time processing while accommodating variations in audio input.
 
-1. If you were to improve your system for a production environment, what are two improvements you would make?
+3. If you were to improve your system for a production environment, what are two improvements you would make?
+
 = The current implementation still lacks a robust and efficient audio processing pipeline. The two major issues are the processing of non-overlapping audio chunks and the lack of a mechanism to handle unvoiced audio. For non-overlapping audio chunks, this caused the model to miss some words, especially those at the end of each chunk, which can lead to incomplete transcriptions. For unvoiced audio, the model may produce random transcriptions, as it does not handle silence or unvoiced audio properly.
 
 To handle these issues, I would implement the following improvements:
