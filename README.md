@@ -89,7 +89,7 @@ This program uses several Python libraries to handle real-time audio transcripti
 
 3. If you were to improve your system for a production environment, what are two improvements you would make?
 
-= The current implementation still lacks a robust and efficient audio processing pipeline. The two major issues are the processing of non-overlapping audio chunks and the lack of a mechanism to handle unvoiced audio. For non-overlapping audio chunks, this caused the model to miss some words, especially those at the end of each chunk, which can lead to incomplete transcriptions. For unvoiced audio, the model may produce random transcriptions, as it does not handle silence or unvoiced audio properly.
+= The current implementation still lacks a robust and efficient audio processing pipeline. The two major issues are the processing of non-overlapping audio chunks and the lack of a mechanism to handle silent audio. For non-overlapping audio chunks, this caused the model to miss some words, especially those at the end of each chunk, which can lead to incomplete transcriptions. For silent audio, the model may produce random transcriptions, as it does not handle silent audio properly.
 
 To handle these issues, I would implement the following improvements:
 
@@ -107,7 +107,7 @@ To handle these issues, I would implement the following improvements:
 
    > Source: <https://youtu.be/_spinzpEeFM?si=rS5n9ChxQcDPHqfD>
 
-2. **Unvoiced Audio Handling**: Implement a mechanism to handle unvoiced audio, such as silence or background noise, to prevent the model from producing random transcriptions. This can be achieved by using a voice activity detection (VAD) algorithm to detect unvoiced audio and skip processing those segments.
+2. **Silent Audio Handling**: Implement a mechanism to handle silent audio, or even background noise, to prevent the model from producing random transcriptions. This can be achieved by using a voice activity detection (VAD) algorithm to detect silent audio and skip processing those segments.
 
     ![Voice Activity Detection](./images/vad.png)
 
